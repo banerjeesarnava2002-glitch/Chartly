@@ -1,0 +1,166 @@
+You are an expert AI programming assistant working on the Dataset Playground project. This is a full-stack application for exploring, visualizing, and analyzing datasets with a React/TypeScript frontend and Python/FastAPI backend.
+
+## Project Context
+- Frontend: React 18+ with TypeScript, Tailwind CSS, Vite build tool
+- Backend: Python 3.11+, FastAPI, SQLAlchemy ORM, Pydantic for validation
+- Database: PostgreSQL with Alembic for migrations
+- Auth: Auth0 with JWT tokens, OAuth 2.0 flow
+- Deployment: Docker containers on AWS (ECS or Elastic Beanstalk)
+- State Management: React Query for server state, Zustand for client state
+- Testing: Vitest + React Testing Library (frontend), pytest (backend)
+- API Pattern: RESTful endpoints with OpenAPI documentation
+
+## Coding Standards
+
+### General
+- Use TypeScript strictly (no `any` types unless absolutely necessary)
+- Prefer functional components with hooks over class components
+- Use async/await over raw promises or callbacks
+- Write self-documenting code with clear variable/function names
+- Keep functions small and focused (single responsibility)
+- Maximum line length: 100 characters
+- Use 2-space indentation for all files
+
+### Frontend (React/TypeScript)
+- Component file naming: PascalCase (DataTable.tsx)
+- Utility/helper files: camelCase (formatDate.ts)
+- Use named exports for components, default exports for pages
+- Import order: React → third-party → internal components → utils → styles
+- Use Tailwind utility classes over custom CSS
+- Extract reusable logic into custom hooks
+- Use React Query for all API calls with proper error handling
+- Type all props with interfaces (not types) prefixed with component name
+
+### Backend (Python/FastAPI)
+- Follow PEP 8 with Black formatting (line length 100)
+- Use type hints for all function parameters and return values
+- File naming: snake_case (data_routes.py)
+- Class naming: PascalCase (DataService)
+- Use dependency injection for services and repositories
+- Validate all inputs with Pydantic models
+- Use SQLAlchemy 2.0 style queries (select() pattern)
+- Implement proper error handling with HTTPException
+
+## Preferred Patterns
+
+### Frontend Patterns
+```
+// Component structure
+interface DataTableProps {
+  datasetId: string;
+  onRowSelect?: (row: DatasetRow) => void;
+}
+
+export const DataTable: React.FC<DataTableProps> = ({ datasetId, onRowSelect }) => {
+  const { data, isLoading } = useDatasetQuery(datasetId);
+  
+  if (isLoading) return <LoadingSpinner />;
+  
+  return (
+    <div className="overflow-x-auto rounded-lg shadow">
+      {/* table implementation */}
+    </div>
+  );
+};
+```
+
+### Backend Patterns
+```python
+# Service layer pattern
+class DatasetService:
+    def __init__(self, db: AsyncSession, auth_service: AuthService):
+        self.db = db
+        self.auth_service = auth_service
+    
+    async def get_dataset(self, dataset_id: UUID, user_id: str) -> Dataset:
+        dataset = await self.db.execute(
+            select(Dataset).where(
+                Dataset.id == dataset_id,
+                Dataset.user_id == user_id
+            )
+        )
+        if not dataset:
+            raise HTTPException(status_code=404, detail="Dataset not found")
+        return dataset.scalar_one()
+```
+
+### API Route Pattern
+```python
+router = APIRouter(prefix="/api/v1/datasets", tags=["datasets"])
+
+@router.get("/{dataset_id}")
+async def get_dataset(
+    dataset_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    service = DatasetService(db, current_user)
+    return await service.get_dataset(dataset_id, current_user.id)
+```
+
+### Error Handling Pattern
+```typescript
+// Frontend error boundary
+class DatasetErrorBoundary extends React.Component<
+  { children: React.ReactNode; fallback?: React.ReactNode },
+  { hasError: boolean; error?: Error }
+> {
+  // Standard error boundary implementation
+}
+
+// Backend error handler
+@app.exception_handler(ValidationError)
+async def validation_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors(), "type": "validation_error"}
+    )
+```
+
+## Things to Avoid
+
+### Frontend
+- ❌ Using `any` type - always define proper types
+- ❌ Direct DOM manipulation - use React refs
+- ❌ Inline styles - use Tailwind classes
+- ❌ Large component files (>300 lines) - split into smaller components
+- ❌ Mutating state directly - always use setState or immer
+- ❌ Missing loading/error states for async operations
+- ❌ Unnecessary re-renders - memoize when needed
+- ❌ Using class components unless lifecycle methods are required
+
+### Backend
+- ❌ Raw SQL queries - use SQLAlchemy ORM
+- ❌ Synchronous database calls in async routes
+- ❌ Exposing internal IDs or sensitive data in responses
+- ❌ Hardcoding configuration values - use environment variables
+- ❌ Ignoring database connection pooling
+- ❌ Returning unhandled exceptions to client
+- ❌ Using `*args` or `**kwargs` without clear documentation
+- ❌ Circular imports - use proper module structure
+
+### General
+- ❌ Committing secrets, tokens, or credentials to version control
+- ❌ Skipping input validation on either frontend or backend
+- ❌ Using deprecated packages or APIs
+- ❌ Ignoring TypeScript strict mode errors
+- ❌ Writing untested code - maintain >80% test coverage
+- ❌ Hardcoding environment-specific values
+- ❌ Using console.log in production code
+- ❌ Ignoring TypeScript strict mode warnings
+
+### Performance
+- ❌ Large bundle sizes - implement code splitting
+- ❌ Unoptimized database queries - use eager loading wisely
+- ❌ Missing pagination for large datasets
+- ❌ Blocking the main thread with heavy computations
+- ❌ Unnecessary API calls - cache when appropriate
+- ❌ Missing memoization for expensive computations
+
+### Security
+- ❌ Storing JWT tokens in localStorage - use httpOnly cookies
+- ❌ Trusting user input without sanitization
+- ❌ Missing rate limiting on API endpoints
+- ❌ Exposing stack traces in production
+- ❌ Using weak password hashing algorithms
+- ❌ Missing CORS configuration for production

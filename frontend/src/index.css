@@ -1,0 +1,239 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design System: Together AI inspired ─────────────────────── */
+:root {
+  /* Colors */
+  --dark-blue:  #010120;
+  --lavender:   #bdbbff;
+  --magenta:    #ef2cc1;
+  --orange:     #fc4c02;
+  --white:      #ffffff;
+  --black:      #000000;
+  --border-light: rgba(0, 0, 0, 0.08);
+  --border-dark:  rgba(255, 255, 255, 0.12);
+  --glass-dark:   rgba(0, 0, 0, 0.08);
+  --shadow:       rgba(1, 1, 32, 0.10);
+
+  /* Typography */
+  --font-primary: 'DM Sans', 'Arial', sans-serif;
+  --font-mono:    'JetBrains Mono', 'Georgia', monospace;
+}
+
+/* ── Base ────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { height: 100%; }
+body {
+  height: 100%;
+  margin: 0;
+  background: #ffffff;
+  color: #000000;
+  font-family: var(--font-primary);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.30;
+  letter-spacing: -0.16px;
+  -webkit-font-smoothing: antialiased;
+}
+#root { height: 100%; display: flex; flex-direction: column; }
+
+/* ── Typography helpers ──────────────────────────────────────── */
+.type-display {
+  font-family: var(--font-primary);
+  font-size: 3.5rem;
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -1.92px;
+}
+.type-heading {
+  font-family: var(--font-primary);
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.42px;
+}
+.type-subheading {
+  font-family: var(--font-primary);
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.30;
+  letter-spacing: -0.18px;
+}
+.type-body {
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.30;
+  letter-spacing: -0.16px;
+}
+.type-caption {
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.40;
+  letter-spacing: 0;
+}
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.055px;
+  text-transform: uppercase;
+}
+
+/* ── Surface & Card system ───────────────────────────────────── */
+.card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  box-shadow: rgba(1, 1, 32, 0.06) 0px 2px 8px;
+}
+.card-sharp {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+}
+.card-dark {
+  background: var(--dark-blue);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+}
+.elevated {
+  box-shadow: rgba(1, 1, 32, 0.10) 0px 4px 10px;
+}
+
+/* ── Button system ───────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: var(--dark-blue);
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-family: var(--font-primary);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.16px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.btn-primary:hover { opacity: 0.85; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: #000000;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: -0.14px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.btn-outline:hover {
+  border-color: rgba(0,0,0,0.20);
+  background: rgba(0,0,0,0.03);
+}
+
+.btn-glass {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: 4px;
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.btn-glass:hover { background: rgba(255, 255, 255, 0.18); }
+
+/* ── Badge / Tag ─────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.055px;
+  text-transform: uppercase;
+  color: #000000;
+}
+.badge-dark {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.20);
+  color: #ffffff;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────── */
+.sidebar {
+  background: #fafafa;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* ── Pastel hero gradient (decoration only) ──────────────────── */
+.hero-gradient {
+  background: linear-gradient(135deg,
+    rgba(239,44,193,0.06) 0%,
+    rgba(189,187,255,0.10) 45%,
+    rgba(100,160,255,0.07) 100%
+  );
+}
+
+/* ── Animations ──────────────────────────────────────────────── */
+.animate-in {
+  animation: slideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.20); }
+
+/* ── Legacy compat (keep for old classes still in code) ──────── */
+.bi-card { @apply card; }
+.bi-sidebar { @apply sidebar; }
+
+/* ── Print Styles ────────────────────────────────────────────── */
+@media print {
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .no-print, .sidebar, header, footer, form, .chat-input-container {
+    display: none !important;
+  }
+  .card {
+    page-break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+  /* Hide the scrollbars for print */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
