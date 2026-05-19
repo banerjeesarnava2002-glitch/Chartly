@@ -10,6 +10,8 @@ load_dotenv()
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 if not SQLALCHEMY_DATABASE_URL or SQLALCHEMY_DATABASE_URL.startswith("postgresql://user:password@ep-your-endpoint"):
     SQLALCHEMY_DATABASE_URL = "sqlite:///./playground.db"
+elif SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
+    SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
     engine = create_engine(
