@@ -29,7 +29,8 @@ app = FastAPI(
 
 # Configure CORS
 allowed_origins_str = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:5173")
-origins = [origin.strip() for origin in allowed_origins_str.split(",")]
+# Strip leading/trailing whitespace and trailing slashes to prevent matching mismatches
+origins = [origin.strip().rstrip("/") for origin in allowed_origins_str.split(",") if origin.strip()]
 
 app.add_middleware(
     CORSMiddleware,

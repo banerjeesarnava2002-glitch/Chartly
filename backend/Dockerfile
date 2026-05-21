@@ -28,4 +28,5 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8000/health || exit 1
 
 # Run the application using gunicorn with uvicorn workers
+# We use 1 worker and a 120s timeout to fit within Render's free tier memory (512MB) and slow CPU startup
 CMD ["gunicorn", "app.main:app", "-w", "1", "--timeout", "120", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]

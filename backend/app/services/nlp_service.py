@@ -12,6 +12,10 @@ def get_client():
     if _client is None:
         api_key = os.getenv("DEEPSEEK_API_KEY")
         base_url = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
+        if api_key:
+            api_key = api_key.strip()
+        if base_url:
+            base_url = base_url.strip()
         if api_key and api_key != "your_deepseek_api_key_here":
             _client = OpenAI(api_key=api_key, base_url=base_url)
     return _client
