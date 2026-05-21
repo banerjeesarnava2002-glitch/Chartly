@@ -218,6 +218,169 @@ body {
 .bi-card { @apply card; }
 .bi-sidebar { @apply sidebar; }
 
+/* ── Rich Markdown Answer (.md-answer) ───────────────────────── */
+.md-answer {
+  font-size: 14px;
+  line-height: 1.70;
+  letter-spacing: -0.14px;
+  color: #111;
+}
+
+/* Reset top/bottom margins on first/last child */
+.md-answer > *:first-child { margin-top: 0 !important; }
+.md-answer > *:last-child  { margin-bottom: 0 !important; }
+
+/* Paragraphs */
+.md-answer p {
+  margin: 0 0 10px 0;
+  line-height: 1.70;
+}
+
+/* Headings */
+.md-answer h1, .md-answer h2, .md-answer h3,
+.md-answer h4, .md-answer h5, .md-answer h6 {
+  font-family: var(--font-primary);
+  font-weight: 500;
+  line-height: 1.20;
+  margin: 18px 0 8px 0;
+  color: #000;
+}
+.md-answer h1 { font-size: 1.25rem; letter-spacing: -0.6px; }
+.md-answer h2 { font-size: 1.05rem; letter-spacing: -0.4px; }
+.md-answer h3 { font-size: 0.95rem; letter-spacing: -0.2px; }
+.md-answer h4, .md-answer h5, .md-answer h6 { font-size: 0.875rem; letter-spacing: -0.14px; }
+
+/* Bold & Italic */
+.md-answer strong { font-weight: 600; color: #000; }
+.md-answer em     { font-style: italic; color: rgba(0,0,0,0.75); }
+
+/* Inline code */
+.md-answer code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: rgba(1, 1, 32, 0.06);
+  color: #010120;
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid rgba(1, 1, 32, 0.08);
+}
+
+/* Code blocks */
+.md-answer pre {
+  background: #010120;
+  color: #bdbbff;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  padding: 14px 16px;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 10px 0;
+}
+.md-answer pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  border: none;
+  font-size: inherit;
+  border-radius: 0;
+}
+
+/* Lists */
+.md-answer ul, .md-answer ol {
+  margin: 6px 0 10px 0;
+  padding-left: 20px;
+}
+.md-answer li {
+  margin: 3px 0;
+  line-height: 1.65;
+}
+.md-answer ul { list-style-type: disc; }
+.md-answer ol { list-style-type: decimal; }
+.md-answer li::marker { color: rgba(0,0,0,0.35); }
+
+/* Nested lists */
+.md-answer li > ul, .md-answer li > ol {
+  margin: 2px 0;
+}
+
+/* Blockquote */
+.md-answer blockquote {
+  margin: 10px 0;
+  padding: 10px 16px;
+  border-left: 3px solid #bdbbff;
+  background: rgba(189, 187, 255, 0.07);
+  border-radius: 0 4px 4px 0;
+  color: rgba(0,0,0,0.65);
+  font-style: italic;
+}
+.md-answer blockquote p { margin: 0; }
+
+/* Horizontal rule */
+.md-answer hr {
+  border: none;
+  border-top: 1px solid rgba(0,0,0,0.08);
+  margin: 14px 0;
+}
+
+/* Tables (GFM) */
+.md-answer table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin: 10px 0;
+  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+.md-answer thead {
+  background: #010120;
+  color: #fff;
+}
+.md-answer thead th {
+  padding: 8px 12px;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.75);
+  border-right: 1px solid rgba(255,255,255,0.08);
+  white-space: nowrap;
+}
+.md-answer thead th:last-child { border-right: none; }
+.md-answer tbody tr {
+  border-top: 1px solid rgba(0,0,0,0.06);
+  transition: background 0.1s;
+}
+.md-answer tbody tr:hover { background: rgba(0,0,0,0.02); }
+.md-answer tbody td {
+  padding: 7px 12px;
+  border-right: 1px solid rgba(0,0,0,0.05);
+  color: rgba(0,0,0,0.75);
+  vertical-align: top;
+}
+.md-answer tbody td:last-child { border-right: none; }
+
+/* Task list checkboxes (GFM) */
+.md-answer input[type="checkbox"] {
+  margin-right: 6px;
+  accent-color: #010120;
+}
+
+/* Strikethrough */
+.md-answer del { text-decoration: line-through; color: rgba(0,0,0,0.4); }
+
+/* Links */
+.md-answer a {
+  color: #010120;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: rgba(1,1,32,0.3);
+}
+.md-answer a:hover { text-decoration-color: #010120; }
+
 /* ── Print Styles ────────────────────────────────────────────── */
 @media print {
   body {
@@ -237,3 +400,4 @@ body {
     display: none;
   }
 }
+

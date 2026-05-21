@@ -1,14 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Database, RefreshCcw, Settings2, MessageSquare, Send, Loader2 } from 'lucide-react';
+import { Database, RefreshCcw, Settings2, MessageSquare, Send, Loader2, Sliders } from 'lucide-react';
 import { FileUpload } from './components/FileUpload';
 import { DataPreview } from './components/DataPreview';
 import { analyzeDataset } from './lib/api';
 import { ChatFeed } from './components/ChatFeed';
+import { TransformPanel } from './components/TransformPanel';
 
 interface DatasetMetadata {
   id: number;
   filename: string;
   columns: string[];
+  column_types: Record<string, string>;
   row_count: number;
   preview: any[];
 }
@@ -35,6 +37,7 @@ function App() {
   const [columnAliases, setColumnAliases] = useState<Record<string, string>>({});
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showTransform, setShowTransform] = useState(false);
   const chatBottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -227,6 +230,18 @@ function App() {
                   preview={dataset.preview}
                 />
               </div>
+
+              {/* Transform button */}
+              <div style={{ padding: '16px 20px', borderTop: '1px solid rgba(0,0,0,0.06)', marginTop: 8 }}>
+                <button
+                  className="btn-outline"
+                  onClick={() => setShowTransform(true)}
+                  style={{ width: '100%', justifyContent: 'center', fontSize: '13px', padding: '8px 12px' }}
+                >
+                  <Sliders size={13} />
+                  Transform Data
+                </button>
+              </div>
             </aside>
 
             {/* ── Chat area ── */}
@@ -361,6 +376,16 @@ function App() {
           </>
         )}
       </div>
+
+      {/* Transform Panel overlay */}
+      {showTransform && dataset && (
+        <TransformPanel
+          datasetId={dataset.id}
+          columns={dataset.columns}
+          columnTypes={dataset.column_types || {}}
+          onClose={() => setShowTransform(false)}
+        />
+      )}
 
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }

@@ -8,6 +8,7 @@ from app.database import engine, Base, get_db
 from app.models import Dataset, AnalysisHistory
 from app.services.data_service import DataService
 from app.services.nlp_service import NLPService
+from app.services.transform_service import TransformService
 
 import logging
 
@@ -74,6 +75,7 @@ async def upload_dataset(file: UploadFile = File(...), db: Session = Depends(get
             "id": db_dataset.id,
             "filename": db_dataset.filename,
             "columns": db_dataset.columns,
+            "column_types": db_dataset.column_types,
             "row_count": db_dataset.row_count,
             "preview": metadata["preview"]
         }
@@ -287,3 +289,110 @@ Happy analyzing!
     except Exception as e:
         logger.error(f"Error during file download: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to process download: {str(e)}")
+
+
+class TransformRequest(BaseModel):
+    dataset_id: int
+    operation: str  # "filter" | "aggregate" | "pivot"
+    params: dict
+
+
+@app.post("/api/transform")
+def transform_dataset(request: TransformRequest, db: Session = Depends(get_db)):
+    """
+    Apply data transformations: filter, aggregate, or pivot.
+
+    Filter params:
+        filters: list of {column, operator, value}
+    Aggregate params:
+        group_by: list of column names
+        agg_col:  column to aggregate (or '__count__' for row count)
+        agg_func: 'sum' | 'mean' | 'count' | 'min' | 'max' | 'std'
+    Pivot params:
+        index:    row grouping column
+        columns:  column grouping column
+        values:   values column
+        agg_func: 'sum' | 'mean' | 'count' | 'min' | 'max'
+    """
+    dataset = db.query(Dataset).filter(Dataset.id == request.dataset_id).first()
+    if not dataset:
+        raise HTTPException(status_code=404, detail="Dataset not found")
+
+    op = request.operation
+    params = request.params
+
+    try:
+        if op == "filter":
+            result = TransformService.filter_data(
+                dataset.file_path,
+                params.get("filters", []),
+            )
+        elif op == "aggregate":
+            result = TransformService.aggregate_data(
+                dataset.file_path,
+                group_by=params.get("group_by", []),
+                agg_col=params.get("agg_col", ""),
+                agg_func=params.get("agg_func", "sum"),
+            )
+        elif op == "pivot":
+            result = TransformService.pivot_data(
+                dataset.file_path,
+                index=params.get("index", ""),
+                columns=params.get("columns", ""),
+                values=params.get("values", ""),
+                agg_func=params.get("agg_func", "sum"),
+            )
+        else:
+            raise HTTPException(status_code=400, detail=f"Unknown operation: {op}")
+
+        return {
+            "operation": op,
+            **result,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error during transform ({op}): {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/history/{dataset_id}")
+def get_history(dataset_id: int, limit: int = 50, db: Session = Depends(get_db)):
+    """Return analysis history for a dataset, newest first."""
+    dataset = db.query(Dataset).filter(Dataset.id == dataset_id).first()
+    if not dataset:
+        raise HTTPException(status_code=404, detail="Dataset not found")
+
+    entries = (
+        db.query(AnalysisHistory)
+        .filter(AnalysisHistory.dataset_id == dataset_id)
+        .order_by(AnalysisHistory.created_at.desc())
+        .limit(limit)
+        .all()
+    )
+
+    return {
+        "dataset_id": dataset_id,
+        "total": len(entries),
+        "entries": [
+            {
+                "id": e.id,
+                "query": e.query,
+                "operation_type": e.operation_type,
+                "result": e.result,
+                "created_at": e.created_at.isoformat() if e.created_at else None,
+            }
+            for e in entries
+        ],
+    }
+
+
+@app.delete("/api/history/{entry_id}")
+def delete_history_entry(entry_id: int, db: Session = Depends(get_db)):
+    """Delete a single history entry."""
+    entry = db.query(AnalysisHistory).filter(AnalysisHistory.id == entry_id).first()
+    if not entry:
+        raise HTTPException(status_code=404, detail="History entry not found")
+    db.delete(entry)
+    db.commit()
+    return {"deleted": entry_id}

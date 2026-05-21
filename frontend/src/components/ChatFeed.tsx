@@ -1,4 +1,6 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Bot, User, BarChart3, LayoutGrid, Sparkles } from 'lucide-react';
 import { Visualization } from './Visualization';
 import { Dashboard } from './Dashboard';
@@ -74,16 +76,16 @@ export const ChatFeed: React.FC<ChatFeedProps> = ({
 
               <div style={{ flex: 1, minWidth: 0 }}>
 
-                {/* Text Answer */}
+                {/* Text Answer — rich markdown */}
                 {msg.result.type === 'answer' && (
-                  <div className="card" style={{ padding: '16px 20px', maxWidth: 600 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+                  <div className="card md-answer" style={{ padding: '16px 20px', maxWidth: 640 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
                       <Sparkles size={12} color="#bdbbff" />
                       <span className="mono-label" style={{ color: 'rgba(0,0,0,0.4)' }}>AI Answer</span>
                     </div>
-                    <p style={{ fontSize: '14px', lineHeight: 1.65, letterSpacing: '-0.14px', color: '#111', whiteSpace: 'pre-wrap', margin: 0 }}>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
                       {msg.result.parsed_operation?.message || 'No response.'}
-                    </p>
+                    </ReactMarkdown>
                   </div>
                 )}
 

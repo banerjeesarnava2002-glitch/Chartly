@@ -25,4 +25,29 @@ export const analyzeDataset = async (datasetId: number, query: string) => {
   return response.data;
 };
 
+export type TransformOperation = 'filter' | 'aggregate' | 'pivot';
+
+export const transformDataset = async (
+  datasetId: number,
+  operation: TransformOperation,
+  params: Record<string, unknown>
+) => {
+  const response = await api.post('/api/transform', {
+    dataset_id: datasetId,
+    operation,
+    params,
+  });
+  return response.data;
+};
+
+export const getHistory = async (datasetId: number, limit = 50) => {
+  const response = await api.get(`/api/history/${datasetId}`, { params: { limit } });
+  return response.data;
+};
+
+export const deleteHistoryEntry = async (entryId: number) => {
+  const response = await api.delete(`/api/history/${entryId}`);
+  return response.data;
+};
+
 export default api;
